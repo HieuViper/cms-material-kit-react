@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { AsyncStorage } from 'AsyncStorage';
 import { Navigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 
 export const authContext = createContext();
 const Auth = ({ children }) => {
@@ -37,7 +38,7 @@ const Auth = ({ children }) => {
       <Navigate to="/login" />
     )
   ) : (
-    'loading... '
+    <CircularProgress />
   );
 };
 
