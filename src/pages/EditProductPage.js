@@ -15,15 +15,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import config from '../utils/config';
 import CustomTab from '../components/tab';
-import { callGet } from '../utils/api';
+import { call, callGet, callUpload } from '../utils/api';
 
 const EditProductPage = () => {
   const { id } = useParams();
   const toastId = useRef(null);
+  const navigate = useNavigate();
 
   const [products, setProducts] = useState({
     code: '',
@@ -79,19 +80,14 @@ const EditProductPage = () => {
 
   const updateProductHandler = async () => {
     // toast.success('Wow so easy !');
-    const toastId = toast.loading('Updating...');
     const formData = new FormData();
     formData.append('file', serialImage);
     try {
-      const response = await axios({
-        method: 'post',
-        url: 'https://web-api.zadez.vn/products/upload/',
-        data: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
-      }).then((res) => {
+      const response = callUpload('products/upload/', 'POST', formData).then((res) => {
+        console.log(res);
         const updateData = {
           code: products.code,
-          serialImageURL: res.data.url,
+          serialImageURL: res.url || products.serialImageURL,
           status: products.status,
           active: products.active,
           pinCode: products.pinCode,
@@ -110,18 +106,22 @@ const EditProductPage = () => {
             },
           ],
         };
-        axios
-          .put(`https://web-api.zadez.vn/products/update/${id}`, updateData)
-          .then((item) => {
-            console.log(item);
-          })
-          .catch((err) => console.log(err));
-        setProducts({ ...products, serialImageURL: res.data.url });
+        call(`products/update/${id}`, 'PUT', updateData);
+        // axios
+        //   .put(`https://web-api.zadez.vn/products/update/${id}`, updateData)
+        //   .then((item) => {
+        //     console.log(item);
+        //   })
+        //   .catch((err) => console.log(err));
+        setProducts({ ...products, serialImageURL: res.url });
       });
-      toast.update(toastId, { render: 'Update Successfully', type: 'success', isLoading: false, autoClose: 3000 });
+      toast.success('Update Successfully', { autoClose: 2000 });
+      setTimeout(() => {
+        navigate('/dashboard/products-test');
+      }, 2000);
     } catch (error) {
       console.log(error);
-      toast.update(toastId, { render: 'Something went wrong', type: 'error', isLoading: false });
+      toast.error('Something went wrong');
     }
   };
 
@@ -161,6 +161,13 @@ const EditProductPage = () => {
             products.ProductTranslations[index].description = data;
             setProducts({ ...products });
             // console.log(data);
+          }}
+          onReady={(editor) => {
+            // You can store the "editor" and use when it is needed.
+            // console.log("Editor is ready to use!", editor);
+            editor.editing.view.change((writer) => {
+              writer.setStyle('height', '200px', editor.editing.view.document.getRoot());
+            });
           }}
           name="description"
         />
@@ -329,7 +336,7 @@ const EditProductPage = () => {
           </Box>
         </>
       ) : (
-        'loading...'
+        <CircularProgress />
       )}
       <ToastContainer
         position="top-right"
