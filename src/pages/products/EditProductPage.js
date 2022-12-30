@@ -17,9 +17,9 @@ import {
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import config from '../utils/config';
-import CustomTab from '../components/tab';
-import { call, callGet, callUpload } from '../utils/api';
+import config from '../../utils/config';
+import CustomTab from '../../components/tab';
+import { call, callGet, callUpload } from '../../utils/api';
 
 const EditProductPage = () => {
   const { id } = useParams();

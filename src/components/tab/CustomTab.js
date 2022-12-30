@@ -9,6 +9,7 @@ function a11yProps(index) {
 }
 
 const CustomTab = ({ header, bodies }) => {
+  console.log('🚀 ~ file: CustomTab.js:12 ~ CustomTab ~ bodies', bodies);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {

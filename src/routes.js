@@ -3,16 +3,19 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
-import BlogPage from './pages/BlogPage';
+import BlogPage from './pages/blog/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
+import ProductsPage from './pages/products/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import Auth from './utils/Auth';
-import BlogPageTest from './pages/BlogPageTest';
-import ProductsPageTest from './pages/ProductPageTest';
-import EditProductPage from './pages/EditProductPage';
+import BlogPageTest from './pages/blog/BlogPageTest';
+import ProductsPageTest from './pages/products/ProductPageTest';
+import EditProductPage from './pages/products/EditProductPage';
+import ConstsPage from './pages/consts/ConstsPage';
+import EditConstPage from './pages/consts/EditConstPage';
+import AddConstPage from './pages/consts/AddConstPage';
 // import { authContext } from './utils/useAuth';
 // ----------------------------------------------------------------------
 
@@ -44,6 +47,9 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'blog-test', element: <BlogPageTest /> },
         { path: 'edit-product/:id', element: <EditProductPage /> },
+        { path: 'consts', element: <ConstsPage /> },
+        { path: 'edit-const/:id', element: <EditConstPage /> },
+        { path: 'add-const/', element: <AddConstPage /> },
       ],
     },
     {

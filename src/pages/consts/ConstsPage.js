@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { styled } from '@mui/system';
 import { Helmet } from 'react-helmet-async';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import {
   Box,
   Button,
   Card,
-  Checkbox,
   CircularProgress,
   Container,
   IconButton,
@@ -25,42 +24,43 @@ import {
   Typography,
 } from '@mui/material';
 // components
-import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
-// mock
-import PRODUCTS from '../_mock/products';
-import Scrollbar from '../components/scrollbar/Scrollbar';
-import Label from '../components/label/Label';
-import { ColorPreview } from '../components/color-utils';
-import config from '../utils/config';
-import Iconify from '../components/iconify';
+import Scrollbar from '../../components/scrollbar/Scrollbar';
+import config from '../../utils/config';
+import Iconify from '../../components/iconify';
+import { call, callGet } from '../../utils/api';
+import { authContext } from '../../utils/Auth';
 // ----------------------------------------------------------------------
 
-const StyledProductImg = styled('img')({
+const StyleditemImg = styled('img')({
   top: 0,
   width: '100%',
   height: '100%',
   objectFit: 'cover',
   position: 'absolute',
 });
-export default function ProductsPageTest() {
+export default function ConstsPage() {
   const navigate = useNavigate();
-  const [openFilter, setOpenFilter] = useState(false);
-  const [dataProduct, setDataProduct] = useState();
+  // const userData = useContext(authContext);
+  // console.log(
+  //   '🚀 ~ file: ConstsPage.js:44 ~ ConstsPage ~ authContext',
+  //   userData.roles.map((item) => console.log(item))
+  // );
+  const userData = useContext(authContext);
+  const [roles, setRoles] = useState();
+  console.log('🚀 ~ file: ConstsPage.js:50 ~ ConstsPage ~ roles', roles);
+  const [dataConsts, setDataConsts] = useState();
   const [openMenu, setOpenMenu] = useState();
-  const [currentSelectProduct, setCurrentSelectProduct] = useState();
+  const [currentSelectitem, setCurrentSelectitem] = useState();
   const [loading, setLoading] = useState(false);
-  console.log('🚀 ~ file: ProductPageTest.js:51 ~ ProductsPageTest ~ loading', loading);
 
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
-
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
+  // functions
+  const addConstHandler = () => {
+    navigate('/dashboard/add-const');
   };
 
   const handleOpenMenu = (event) => {
-    setCurrentSelectProduct(JSON.parse(event.currentTarget.dataset.currentproduct));
+    setCurrentSelectitem(JSON.parse(event.currentTarget.dataset.currentitem));
+    console.log('🚀 ~ file: ConstsPage.js:60 ~ handleOpenMenu ~ CurrentSelectitem', currentSelectitem);
     setOpenMenu(event.currentTarget);
   };
 
@@ -69,36 +69,55 @@ export default function ProductsPageTest() {
   };
 
   const handleOpenEdit = () => {
-    console.log(currentSelectProduct);
-    navigate(`/dashboard/edit-product/${currentSelectProduct.id}`, { state: currentSelectProduct });
-  };
+    if (roles && (roles.includes('admin') || roles.includes('system'))) {
+      navigate(`/dashboard/edit-const/${currentSelectitem.id}`, { state: currentSelectitem });
 
-  console.log(dataProduct);
+      console.log('🚀 ~ file: ConstsPage.js:70 ~ handleOpenEdit ~ currentSelectitem', currentSelectitem);
+    } else {
+      alert('Ban khong co quyen sua');
+    }
+  };
+  console.log('🚀 ~ file: ConstsPage.js:73 ~ handleOpenEdit ~ currentSelectitem', currentSelectitem);
+
+  const handleDelete = () => {
+    if (roles && roles.includes('system')) {
+      call(`consts/${currentSelectitem.id}`, 'DELETE');
+      setOpenMenu(null);
+      setLoading(true);
+      const data = callGet(`consts`, 'GET', null);
+      data.then((response) => {
+        setDataConsts(response.data);
+        setLoading(false);
+      });
+    } else {
+      alert('Ban khong co quyen xoa');
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
-    axios
-      .get('https://web-api.zadez.vn/products')
-      .then((res) => {
-        setDataProduct(res.data.data);
-        setLoading(false);
-      })
-      .catch((err) => console.log(err));
+    const data = callGet(`consts`, 'GET', null);
+    data.then((response) => {
+      setDataConsts(response.data);
+      setLoading(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    setRoles(userData.roles);
   }, []);
 
   return (
     <>
       <Helmet>
-        <title> Dashboard: Products | Minimal UI </title>
+        <title> Dashboard: Consts | Minimal UI </title>
       </Helmet>
 
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Products table
+          Consts table
         </Typography>
 
-        {/* <ProductList products={PRODUCTS} /> */}
-        {/* <ProductCartWidget /> */}
         <Card>
           <Stack
             direction="row"
@@ -107,13 +126,10 @@ export default function ProductsPageTest() {
             justifyContent="flex-end"
             sx={{ mb: 3, mt: 3 }}
           >
-            <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-              <ProductFilterSidebar
-                openFilter={openFilter}
-                onOpenFilter={handleOpenFilter}
-                onCloseFilter={handleCloseFilter}
-              />
-              <ProductSort />
+            <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1, mx: 1 }}>
+              <Button variant="contained" onClick={addConstHandler}>
+                Add Consts
+              </Button>
             </Stack>
           </Stack>
           <Scrollbar>
@@ -122,11 +138,11 @@ export default function ProductsPageTest() {
                 <TableHead>
                   <TableRow>
                     <TableCell align="left">Image</TableCell>
-                    <TableCell align="left">Name</TableCell>
-                    <TableCell align="left">SerialImage</TableCell>
-                    <TableCell align="left">PinCode</TableCell>
-                    <TableCell align="left">Active</TableCell>
+                    <TableCell align="left">Order</TableCell>
+                    <TableCell align="left">Position</TableCell>
                     <TableCell align="left">Status</TableCell>
+                    <TableCell align="left">Value</TableCell>
+                    <TableCell align="left">Active</TableCell>
                     <TableCell align="left" />
                   </TableRow>
                 </TableHead>
@@ -143,52 +159,37 @@ export default function ProductsPageTest() {
                       <CircularProgress />
                     </Box>
                   ) : (
-                    dataProduct &&
-                    dataProduct.map((product, index) => (
-                      <TableRow key={product.id}>
+                    dataConsts &&
+                    dataConsts.map((item) => (
+                      <TableRow key={item.id}>
                         <TableCell align="left">
                           <Box sx={{ pt: '100%', position: 'relative' }}>
-                            <StyledProductImg
-                              alt={product.ProductTranslations[0].name}
-                              src={config.cdnUrl + product.mainImageURL}
+                            <StyleditemImg
+                              alt={item.ConstTranslations[0].name}
+                              src={config.apiUrl + item.mainImageURL}
                             />
                           </Box>
                         </TableCell>
-                        <TableCell align="left">{product.ProductTranslations[0].name}</TableCell>
-                        <TableCell align="left">
+                        {/* <TableCell align="left">
                           <Box sx={{ pt: '100%', position: 'relative' }}>
-                            <StyledProductImg
-                              alt={product.serialImageURL}
-                              src={config.apiUrl + product.serialImageURL}
-                            />
+                            <StyleditemImg alt={item.serialImageURL} src={config.apiUrl + item.serialImageURL} />
                           </Box>
-                        </TableCell>
-                        <TableCell align="left">{product.pinCode}</TableCell>
-                        <TableCell align="left">{product.active ? 'Yes' : 'No'}</TableCell>
-                        <TableCell align="left">{product.status}</TableCell>
+                        </TableCell> */}
+                        <TableCell align="left">{item.order}</TableCell>
+                        <TableCell align="left">{item.position}</TableCell>
+                        <TableCell align="left">{item.status}</TableCell>
+                        <TableCell align="left">{item.value}</TableCell>
+                        <TableCell align="left">{item.isActive ? 'Yes' : 'No'}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"
                             color="inherit"
                             onClick={handleOpenMenu}
-                            data-currentproduct={JSON.stringify(product)}
+                            data-currentitem={JSON.stringify(item)}
                           >
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton>
                         </TableCell>
-                        {/* <TableCell align="left">
-                        <Typography
-                          variant="subtitle2"
-                          textTransform="uppercase"
-                          color={product.status === 'sale' ? 'red' : '#33bfff'}
-                        >
-                          {product.status}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <ColorPreview colors={product.colors} />
-                      </TableCell>
-                      <TableCell>{product.priceSale === null ? '0' : product.priceSale}$</TableCell> */}
                       </TableRow>
                     ))
                   )}
@@ -221,7 +222,7 @@ export default function ProductsPageTest() {
             Edit
           </MenuItem>
 
-          <MenuItem sx={{ color: 'error.main' }}>
+          <MenuItem sx={{ color: 'error.main' }} onClick={handleDelete}>
             <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
             Delete
           </MenuItem>
