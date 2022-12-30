@@ -50,6 +50,12 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'blog-test', element: <BlogPageTest /> },
         { path: 'edit-product/:id', element: <EditProductPage /> },
+        { path: 'consts', element: <ConstsPage /> },
+        { path: 'edit-const/:id', element: <EditConstPage /> },
+        { path: 'add-const', element: <AddConstPage /> },
+        { path: 'articles', element: <ArticlesPage /> },
+        { path: 'edit-articles/:id', element: <EditArticlesPage /> },
+        { path: 'add-articles', element: <AddArticlesPage /> },
       ],
     },
     {
