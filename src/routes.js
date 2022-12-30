@@ -16,6 +16,9 @@ import EditProductPage from './pages/products/EditProductPage';
 import ConstsPage from './pages/consts/ConstsPage';
 import EditConstPage from './pages/consts/EditConstPage';
 import AddConstPage from './pages/consts/AddConstPage';
+import ArticlesPage from './pages/articles/ArticlesPage';
+import EditArticlesPage from './pages/articles/EditArticlesPage';
+import AddArticlesPage from './pages/articles/AddArticlesPage';
 // import { authContext } from './utils/useAuth';
 // ----------------------------------------------------------------------
 
@@ -47,9 +50,6 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'blog-test', element: <BlogPageTest /> },
         { path: 'edit-product/:id', element: <EditProductPage /> },
-        { path: 'consts', element: <ConstsPage /> },
-        { path: 'edit-const/:id', element: <EditConstPage /> },
-        { path: 'add-const/', element: <AddConstPage /> },
       ],
     },
     {
