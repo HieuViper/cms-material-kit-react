@@ -13,6 +13,9 @@ import Auth from './utils/Auth';
 import BlogPageTest from './pages/BlogPageTest';
 import ProductsPageTest from './pages/ProductPageTest';
 import EditProductPage from './pages/EditProductPage';
+import ArticlesPage from './pages/articles/ArticlesPage';
+import EditArticlesPage from './pages/articles/EditArticlesPage';
+import AddArticlesPage from './pages/articles/AddArticlesPage';
 // import { authContext } from './utils/useAuth';
 // ----------------------------------------------------------------------
 
@@ -44,6 +47,9 @@ export default function Router() {
         { path: 'blog', element: <BlogPage /> },
         { path: 'blog-test', element: <BlogPageTest /> },
         { path: 'edit-product/:id', element: <EditProductPage /> },
+        { path: 'articles', element: <ArticlesPage /> },
+        { path: 'edit-articles/:id', element: <EditArticlesPage /> },
+        { path: 'add-articles', element: <AddArticlesPage /> },
       ],
     },
     {

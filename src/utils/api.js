@@ -2,7 +2,7 @@ import { AsyncStorage } from 'AsyncStorage';
 import axios from 'axios';
 import config from './config';
 
-export const callNon = async (url1, med, params) => {
+export const callNon = async (url, med, params) => {
   const options = {
     method: med,
     timeout: 15000,
@@ -11,7 +11,7 @@ export const callNon = async (url1, med, params) => {
       accept: 'application/json',
     },
     data: JSON.stringify(params),
-    url: `${config.apiUrl}${url1}`,
+    url: `${config.apiUrl}${url}`,
   };
   return axios(options)
     .then((response) => response.data)
