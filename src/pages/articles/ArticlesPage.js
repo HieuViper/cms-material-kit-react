@@ -196,19 +196,7 @@ export default function ArticlesPage() {
                                                         <Iconify icon={'eva:more-vertical-fill'} />
                                                     </IconButton>
                                                 </TableCell>
-                                                {/* <TableCell align="left">
-                        <Typography
-                          variant="subtitle2"
-                          textTransform="uppercase"
-                          color={product.status === 'sale' ? 'red' : '#33bfff'}
-                        >
-                          {product.status}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <ColorPreview colors={product.colors} />
-                      </TableCell>
-                      <TableCell>{product.priceSale === null ? '0' : product.priceSale}$</TableCell> */}
+
                                             </TableRow>
                                         ))
                                     )}
